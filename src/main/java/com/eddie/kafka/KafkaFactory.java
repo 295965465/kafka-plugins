@@ -12,10 +12,10 @@ import java.util.Properties;
  * @createTime 2018-11-08
  * @description kafka工厂对象生成High Level API
  */
-public class KafkaFactory<K,V> {
+public class KafkaFactory {
 
-    private KafkaProducer<K, V> producer;
-    private Properties props;
+    private KafkaProducer<String, String> producer;
+    private Properties props = new Properties();
 
     private KafkaFactory(){}
 
