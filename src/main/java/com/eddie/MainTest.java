@@ -22,12 +22,11 @@ import java.util.List;
  */
 public class MainTest {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args){
 
         List<KafkaUrlNode> list = new ArrayList<>();
         list.add(new KafkaUrlNode("47.96.29.8", "9092"));
         KafkaProducerConfig config = new KafkaProducerConfig();
-
         config.setUrlNodeList(list);
         KafkaProducer producer = KafkaFactory.create()
                 .init(config)
@@ -35,13 +34,15 @@ public class MainTest {
                 .buildKafkaProducer();
         EddieProducer eddieProducer = new EddieProducer("test", producer);
 
-        eddieProducer.add(new Message("a", "b"));
-        eddieProducer.add(new Message("a", "b"));
-        eddieProducer.add(new Message("a", "b"));
-        eddieProducer.add(new Message("a", "b"));
+
         eddieProducer.start();
         eddieProducer.add(new Message("a", "b"));
         eddieProducer.add(new Message("a", "b"));
+        eddieProducer.add(new Message("a", "b"));
+        eddieProducer.add(new Message("a", "b"));
+        eddieProducer.add(new Message("a", "b"));
+        eddieProducer.add(new Message("a", "b"));
+
         ThreadShutdown.finishThread(eddieProducer);
         System.out.println("测试");
 
