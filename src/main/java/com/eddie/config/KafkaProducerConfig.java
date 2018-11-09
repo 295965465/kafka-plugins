@@ -1,5 +1,6 @@
 package com.eddie.config;
 
+import com.eddie.entity.KafkaUrlNode;
 import com.eddie.exception.KafkaIllegalParameterException;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class KafkaProducerConfig {
      * kafka url list
      * All nodes of a cluster
      */
-    private List<KafakaUrlNode> urlNodeList;
+    private List<KafkaUrlNode> urlNodeList;
 
     /**
      * An id string to pass to the server when making requests.
@@ -38,16 +39,12 @@ public class KafkaProducerConfig {
      */
     private String batchSize;
 
-    /**
-     * topic
-     */
-    private String topic;
-
-    private String async;
-
     public String getUrlNodeList() {
+        if (urlNodeList == null){
+            throw new KafkaIllegalParameterException("缺少kafka服务URL地址");
+        }
         StringBuilder builder = new StringBuilder();
-        for (KafakaUrlNode node:urlNodeList){
+        for (KafkaUrlNode node:urlNodeList){
             builder.append(node.getUrl())
                     .append(":")
                     .append(node.getPort())
@@ -57,7 +54,7 @@ public class KafkaProducerConfig {
         return result.substring(0, result.length() - 1);
     }
 
-    public void setUrlNodeList(List<KafakaUrlNode> urlNodeList) {
+    public void setUrlNodeList(List<KafkaUrlNode> urlNodeList) {
         this.urlNodeList = urlNodeList;
     }
 
@@ -105,25 +102,4 @@ public class KafkaProducerConfig {
         this.batchSize = batchSize;
     }
 
-    public String getTopic() {
-        if (Objects.isNull(topic)){
-            throw new KafkaIllegalParameterException("主题参数未设置");
-        }
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getAsync() {
-        if (Objects.isNull(async)){
-            return "true";
-        }
-        return async;
-    }
-
-    public void setAsync(String async) {
-        this.async = async;
-    }
 }

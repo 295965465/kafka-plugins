@@ -1,4 +1,4 @@
-package com.eddie.config;
+package com.eddie.entity;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * @description kafka url node
  */
 @Data
-public class KafakaUrlNode {
+public class KafkaUrlNode {
 
     /**
      * kafka server url
@@ -18,4 +18,9 @@ public class KafakaUrlNode {
      * kafka server port; default 9092
      */
     private String port;
+
+    public KafkaUrlNode(String url, String port) {
+        this.url = url;
+        this.port = port;
+    }
 }
