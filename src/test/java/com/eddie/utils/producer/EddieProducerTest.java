@@ -25,7 +25,7 @@ public class EddieProducerTest {
                 .init(config)
                 .setKeyAndValueType(TypeDefine.STRING, TypeDefine.STRING)
                 .build();
-        EddieProducer eddieProducer = new EddieProducer("test", producer, true);
+        EddieProducer eddieProducer = new EddieProducer("test", producer);
 
         eddieProducer.add(new Message("a", "b"));
         eddieProducer.add(new Message("a", "b"));

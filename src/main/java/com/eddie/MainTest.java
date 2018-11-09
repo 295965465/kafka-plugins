@@ -5,6 +5,7 @@ import com.eddie.config.TypeDefine;
 import com.eddie.entity.KafkaUrlNode;
 import com.eddie.entity.Message;
 import com.eddie.kafka.KafkaFactory;
+import com.eddie.utils.ThreadShutdown;
 import com.eddie.utils.producer.EddieProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 
@@ -28,7 +29,7 @@ public class MainTest {
                 .init(config)
                 .setKeyAndValueType(TypeDefine.STRING, TypeDefine.STRING)
                 .build();
-        EddieProducer eddieProducer = new EddieProducer("test", producer, true);
+        EddieProducer eddieProducer = new EddieProducer("test", producer);
 
         eddieProducer.add(new Message("a", "b"));
         eddieProducer.add(new Message("a", "b"));
@@ -37,10 +38,7 @@ public class MainTest {
         eddieProducer.start();
         eddieProducer.add(new Message("a", "b"));
         eddieProducer.add(new Message("a", "b"));
-
-        Thread.sleep(3000);
-
-        eddieProducer.interrupt();
-
+        ThreadShutdown.finishThread(eddieProducer);
+        System.out.println("测试");
     }
 }

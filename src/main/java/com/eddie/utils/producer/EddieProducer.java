@@ -25,12 +25,11 @@ public class EddieProducer extends Thread{
 
     private String topic;
 
-    private boolean isAsync;
+    private boolean shutdown = false;
 
-    public EddieProducer(final String topic, final KafkaProducer<String, String> producer, final boolean isAsync){
+    public EddieProducer(final String topic, final KafkaProducer<String, String> producer){
         queue = new ConcurrentLinkedQueue<>();
         this.topic = topic;
-        this.isAsync = isAsync;
         this.producer = producer;
     }
 
@@ -44,35 +43,27 @@ public class EddieProducer extends Thread{
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            if (queue.size() > 0) {
+        while (!shutdown && !Thread.currentThread().isInterrupted()) {
+            if (!queue.isEmpty()) {
                 long startTime = System.currentTimeMillis();
                 Message message = Objects.requireNonNull(queue.poll());
                 String key = message.getKey();
                 String value = message.getValue();
-                if (isAsync) {
-                    Future<RecordMetadata> send = producer.send(
-                            new ProducerRecord<>(topic, key, value),
-                            new ProducerCallBack(startTime, key, value)
-                    );
-                }else {
-                    try {
-                        RecordMetadata metadata = producer.send(
-                                new ProducerRecord<>(topic, key, value),
-                                new ProducerCallBack(startTime, key, value)
-                        ).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                    }
-                }
+                Future<RecordMetadata> send = producer.send(
+                        new ProducerRecord<>(topic, key, value),
+                        new ProducerCallBack(startTime, key, value)
+                );
             }
-
             try {
-                Thread.sleep(3000);
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public void cancel() {
+        shutdown = true;
+        Thread.currentThread().interrupt();
+    }
 }
