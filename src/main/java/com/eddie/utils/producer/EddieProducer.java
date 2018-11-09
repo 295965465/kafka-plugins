@@ -3,12 +3,14 @@ package com.eddie.utils.producer;
 import com.eddie.entity.Message;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author eddie
@@ -42,28 +44,35 @@ public class EddieProducer extends Thread{
 
     @Override
     public void run() {
-        while (true) {
-            if (!queue.isEmpty()) {
+        while (!Thread.currentThread().isInterrupted()) {
+            if (queue.size() > 0) {
                 long startTime = System.currentTimeMillis();
                 Message message = Objects.requireNonNull(queue.poll());
                 String key = message.getKey();
                 String value = message.getValue();
                 if (isAsync) {
-                    producer.send(
+                    Future<RecordMetadata> send = producer.send(
                             new ProducerRecord<>(topic, key, value),
                             new ProducerCallBack(startTime, key, value)
                     );
-                } else {
+                }else {
                     try {
-                        producer.send(
-                                new ProducerRecord<>(topic, key, value)
-                                , new ProducerCallBack(startTime, key, value)
+                        RecordMetadata metadata = producer.send(
+                                new ProducerRecord<>(topic, key, value),
+                                new ProducerCallBack(startTime, key, value)
                         ).get();
                     } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+                            e.printStackTrace();
                     }
                 }
             }
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 }

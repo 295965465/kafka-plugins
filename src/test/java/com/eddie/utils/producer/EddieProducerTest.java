@@ -1,25 +1,22 @@
-package com.eddie;
+package com.eddie.utils.producer;
 
 import com.eddie.config.KafkaProducerConfig;
 import com.eddie.config.TypeDefine;
 import com.eddie.entity.KafkaUrlNode;
 import com.eddie.entity.Message;
 import com.eddie.kafka.KafkaFactory;
-import com.eddie.utils.producer.EddieProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author eddie
- * @createTime 2018-11-08
- * @description 测试类
- */
-public class MainTest {
+import static org.junit.Assert.*;
 
-    public static void main(String[] args) throws InterruptedException {
+public class EddieProducerTest {
 
+    @Test
+    public void run() throws InterruptedException {
         KafkaProducerConfig config = new KafkaProducerConfig();
         List<KafkaUrlNode> list = new ArrayList<>();
         list.add(new KafkaUrlNode("47.96.29.8", "9092"));
@@ -38,9 +35,9 @@ public class MainTest {
         eddieProducer.add(new Message("a", "b"));
         eddieProducer.add(new Message("a", "b"));
 
-        Thread.sleep(3000);
 
-        eddieProducer.interrupt();
 
+
+        //eddieProducer.interrupt();
     }
 }
